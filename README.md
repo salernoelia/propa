@@ -4,7 +4,7 @@ A lightweight TypeScript framework for Vite with first-class WebAssembly support
 
 ## Philosophy
 
-PropaVite stays close to the DOM with minimal abstractions while providing modern reactive patterns. Built for performance-critical applications that need seamless WebAssembly integration and direct hardware access.
+Propa stays close to the DOM with minimal abstractions while providing modern reactive patterns. Built for performance-critical applications that need seamless WebAssembly integration and direct hardware access.
 
 ## Features
 
@@ -107,7 +107,7 @@ wasm-pack build --target web --out-dir pkg
 }
 ```
 
-### 4. Use WASM in Your PropaVite App
+### 4. Use WASM in Your Propa App
 
 ```tsx
 import { loadTypedWasm, h, reactive, ComponentLifecycle } from '@salernoelia/propa-vite';
@@ -218,9 +218,9 @@ function AnimationLoop() {
 
 High-performance Web-Applications with realtime UI.
 
-## Why PropaVite?
+## Why Propa?
 
-Unlike heavy frameworks, PropaVite provides just enough structure for modern development while maintaining direct access to browser APIs. Perfect for applications where performance and WebAssembly integration are priorities.
+Unlike heavy frameworks, Propa provides just enough structure for modern development while maintaining direct access to browser APIs. Perfect for applications where performance and WebAssembly integration are priorities.
 
 ## License
 
