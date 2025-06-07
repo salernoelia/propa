@@ -23,6 +23,7 @@ npm install @salernoelia/propa-vite
 ### Configuration
 
 **`vite.config.ts`**
+
 ```typescript
 import { defineConfig } from 'vite'
 
@@ -41,6 +42,7 @@ export default defineConfig({
 ```
 
 **`tsconfig.json`**
+
 ```json
 {
   "compilerOptions": {
@@ -66,6 +68,7 @@ cd wasm
 ### 2. Build Your WASM Module
 
 **`wasm/src/lib.rs`**
+
 ```rust
 use wasm_bindgen::prelude::*;
 
@@ -88,6 +91,7 @@ pub fn fibonacci(n: u32) -> u32 {
 ```
 
 **Build the module:**
+
 ```bash
 cd wasm
 wasm-pack build --target web --out-dir pkg
