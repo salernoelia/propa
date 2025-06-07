@@ -1,6 +1,6 @@
 # Propa Framework
 
-![propa-logo](/logo.png)
+![propa-logo](/logo.svg)
 
 A lightweight TypeScript framework for Vite with first-class WebAssembly support and minimal DOM abstractions.
 
