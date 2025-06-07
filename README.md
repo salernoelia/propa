@@ -1,4 +1,4 @@
-# PropaVite
+# Propa Framework
 
 A lightweight TypeScript framework for Vite with first-class WebAssembly support and minimal DOM abstractions.
 
