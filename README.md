@@ -13,7 +13,6 @@ PropaVite stays close to the DOM with minimal abstractions while providing moder
 - **Zero Dependencies**: Pure TypeScript implementation
 - **JSX Without Overhead**: Compile-time JSX transformation to native DOM calls
 - **Smart Reactivity**: Batched updates with automatic subscription management
-- **Creative Coding Ready**: Designed for p5.js integration and graphics programming
 
 ## Quick Start
 
