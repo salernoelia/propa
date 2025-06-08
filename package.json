@@ -1,12 +1,14 @@
 {
   "name": "@salernoelia/propa",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A lightweight framework with JSX support for vanilla TypeScript with Vite",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "rollup -c",
@@ -14,7 +16,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "prepublishOnly": "npm run build && npm run test"
+    "prepublishOnly": "npm run build && npm run test",
+    "example:install": "cd example && npm install",
+    "example:dev": "cd example && npm run dev",
+    "example:build": "cd example && npm run build"
   },
   "keywords": [
     "typescript",
@@ -41,5 +46,9 @@
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/p5": "^1.7.6",
+    "p5": "^2.0.3"
   }
 }

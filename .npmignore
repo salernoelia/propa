@@ -1,0 +1,11 @@
+example/
+src/__tests__/
+*.test.ts
+*.test.js
+jest.config.js
+rollup.config.js
+tsconfig.json
+.github/
+.vscode/
+coverage/
+node_modules/
