@@ -1,4 +1,3 @@
-import { h } from '@salernoelia/propa';
 import { createP5Sketch } from '@salernoelia/propa';
 import p5 from 'p5';
 
@@ -36,14 +35,11 @@ export const BouncingBall = () => {
             p.background(0);
             p.fill(0, 255, 0);
 
-            // Draw ball
             p.ellipse(x, y, 30, 30);
 
-            // Move ball
             x += xSpeed;
             y += ySpeed;
 
-            // Bounce off edges
             if (x > p.width - 15 || x < 15) {
                 xSpeed *= -1;
             }

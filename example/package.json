@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@salernoelia/propa": "file:../",
+    "@tailwindcss/vite": "^4.1.8",
     "@types/p5": "^1.7.6",
-    "p5": "^2.0.3"
+    "p5": "^2.0.3",
+    "tailwindcss": "^4.1.8"
   }
 }

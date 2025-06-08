@@ -1,14 +1,23 @@
 import { ComponentLifecycle } from './lifecycle';
 
+
 export class Router {
     private routes: Map<string, () => HTMLElement> = new Map();
     private currentRoute: string | null = null;
     private routeCache: Map<string, HTMLElement> = new Map();
     private enableCaching: boolean;
+    private useHash: boolean;
 
-    constructor(enableCaching = false) {
+    constructor(enableCaching = false, useHash = true) {
         this.enableCaching = enableCaching;
-        window.addEventListener('hashchange', () => this.handleRoute());
+        this.useHash = useHash;
+
+        if (useHash) {
+            window.addEventListener('hashchange', () => this.handleRoute());
+        } else {
+            window.addEventListener('popstate', () => this.handleRoute());
+        }
+
         window.addEventListener('load', () => this.handleRoute());
     }
 
@@ -17,48 +26,53 @@ export class Router {
     }
 
     private async handleRoute() {
-        const hash = window.location.hash.slice(1) || '/';
+        let path: string;
 
-        if (hash === this.currentRoute) return;
+        if (this.useHash) {
+            path = window.location.hash.slice(1) || '/';
+        } else {
+            path = window.location.pathname || '/';
+        }
+
+        if (path === this.currentRoute) return;
 
         if (this.currentRoute) {
             ComponentLifecycle.executeOnUnmount();
         }
 
-        const handler = this.routes.get(hash);
+        const handler = this.routes.get(path) || this.routes.get('/404');
         if (handler) {
             let element: HTMLElement;
 
-            if (this.enableCaching && this.routeCache.has(hash)) {
-                element = this.routeCache.get(hash)!;
+            if (this.enableCaching && this.routeCache.has(path)) {
+                element = this.routeCache.get(path)!;
             } else {
                 element = handler();
                 if (this.enableCaching) {
-                    this.routeCache.set(hash, element);
+                    this.routeCache.set(path, element);
                 }
             }
 
             const app = document.querySelector<HTMLDivElement>('#app')!;
-
-            const fragment = document.createDocumentFragment();
-            fragment.appendChild(element);
-
             app.innerHTML = '';
-            app.appendChild(fragment);
+            app.appendChild(element);
 
-            this.currentRoute = hash;
+            this.currentRoute = path;
 
             requestAnimationFrame(() => {
                 ComponentLifecycle.executeOnMount();
             });
-        } else {
-            this.routes.get('/404')?.();
         }
     }
 
     navigate(path: string) {
         if (path !== this.currentRoute) {
-            window.location.hash = path;
+            if (this.useHash) {
+                window.location.hash = path;
+            } else {
+                window.history.pushState({}, '', path);
+                this.handleRoute();
+            }
         }
     }
 

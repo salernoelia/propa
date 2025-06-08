@@ -1,4 +1,4 @@
 import './style.css'
-import { routes } from './routes'
+import { routes } from './router'
 
 routes();

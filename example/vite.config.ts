@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
     esbuild: {
@@ -19,5 +20,6 @@ export default defineConfig({
     },
     optimizeDeps: {
         exclude: ['@salernoelia/propa']
-    }
+    },
+    plugins: [tailwindcss(),],
 })
