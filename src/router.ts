@@ -48,7 +48,6 @@ export class Router {
 
             this.currentRoute = hash;
 
-            // Use requestAnimationFrame for better timing
             requestAnimationFrame(() => {
                 ComponentLifecycle.executeOnMount();
             });

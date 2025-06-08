@@ -85,12 +85,10 @@ export class TypedWasmModule<T = any> extends WasmModule {
     }
 }
 
-// Convenience function for quick loading
 export async function loadWasm(wasmPath: string): Promise<WasmModule> {
     return WasmModule.load(wasmPath);
 }
 
-// Type-safe convenience function
 export async function loadTypedWasm<T = any>(wasmPath: string): Promise<TypedWasmModule<T>> {
     return TypedWasmModule.loadTyped<T>(wasmPath);
 }

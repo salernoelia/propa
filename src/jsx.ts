@@ -1,7 +1,6 @@
 import { Reactive } from './reactive';
 import { ComponentLifecycle } from './lifecycle';
 
-// Global registry for cleanup
 const globalCleanupCallbacks: (() => void)[] = [];
 
 export function clearAllReactiveSubscriptions() {
