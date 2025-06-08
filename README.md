@@ -4,10 +4,6 @@
 
 A lightweight TypeScript framework for Vite with first-class WebAssembly support and minimal DOM abstractions.
 
-## Philosophy
-
-Propa stays close to the DOM with minimal abstractions while providing modern reactive patterns. Built for performance-critical applications that need seamless WebAssembly integration and direct hardware access.
-
 ## Features
 
 - **First-Class WASM Support**: Streamlined WebAssembly module loading with TypeScript safety
@@ -15,6 +11,7 @@ Propa stays close to the DOM with minimal abstractions while providing modern re
 - **Zero Dependencies**: Pure TypeScript implementation
 - **JSX Without Overhead**: Compile-time JSX transformation to native DOM calls
 - **Smart Reactivity**: Batched updates with automatic subscription management
+- **Minimal Component and Router Logic**: To efficiently build professional UI.
 
 ## Quick Start
 
