@@ -9,3 +9,5 @@ tsconfig.json
 .vscode/
 coverage/
 node_modules/
+deploy.yml
+.github/
