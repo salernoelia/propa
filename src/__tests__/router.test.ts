@@ -9,7 +9,6 @@ describe('Router', () => {
     beforeEach(() => {
         document.body.innerHTML = '<div id="app"></div>';
         appElement = document.querySelector('#app') as HTMLDivElement;
-        // Reset location hash using the real JSDOM location object
         window.location.hash = '';
     });
 
@@ -43,12 +42,10 @@ describe('Router', () => {
     });
 
     it('should support route caching', () => {
-        router = new Router(true); // Enable caching
         const homeHandler = jest.fn(() => h('div', null, 'Home'));
 
         router.addRoute('/', homeHandler);
 
-        // Test caching functionality
         expect(router).toBeInstanceOf(Router);
     });
 

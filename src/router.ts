@@ -2,7 +2,7 @@ import { ComponentLifecycle } from './lifecycle';
 
 
 export class Router {
-    private routes: Map<string, () => HTMLElement> = new Map();
+    private routes: Map<string, () => HTMLElement | DocumentFragment> = new Map();
     private currentRoute: string | null = null;
     private routeCache: Map<string, HTMLElement> = new Map();
     private enableCaching: boolean;
@@ -21,7 +21,7 @@ export class Router {
         window.addEventListener('load', () => this.handleRoute());
     }
 
-    addRoute(path: string, handler: () => HTMLElement) {
+    addRoute(path: string, handler: () => HTMLElement | DocumentFragment) {
         this.routes.set(path, handler);
     }
 
@@ -47,7 +47,8 @@ export class Router {
             if (this.enableCaching && this.routeCache.has(path)) {
                 element = this.routeCache.get(path)!;
             } else {
-                element = handler();
+                const content = handler();
+                element = this.ensureHTMLElement(content);
                 if (this.enableCaching) {
                     this.routeCache.set(path, element);
                 }
@@ -65,6 +66,15 @@ export class Router {
         }
     }
 
+    private ensureHTMLElement(content: HTMLElement | DocumentFragment): HTMLElement {
+        if (content instanceof DocumentFragment) {
+            const wrapper = document.createElement('div');
+            wrapper.appendChild(content);
+            return wrapper;
+        }
+        return content;
+    }
+
     navigate(path: string) {
         if (path !== this.currentRoute) {
             if (this.useHash) {
@@ -80,7 +90,8 @@ export class Router {
         if (!this.routeCache.has(path)) {
             const handler = this.routes.get(path);
             if (handler) {
-                this.routeCache.set(path, handler());
+                const content = handler();
+                this.routeCache.set(path, this.ensureHTMLElement(content));
             }
         }
     }

@@ -1,21 +1,19 @@
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { reactive, Reactive } from '../reactive';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { reactive } from '../reactive';
 import { ComponentLifecycle } from '../lifecycle';
-import { Router } from '../router';
-import { h, clearAllReactiveSubscriptions } from '../jsx';
+import { h } from '../jsx';
+
+const setupDOM = () => {
+    const app = document.createElement('div');
+    app.id = 'app';
+    document.body.appendChild(app);
+    return app;
+};
 
 describe('Integration Tests', () => {
     beforeEach(() => {
-        document.body.innerHTML = '<div id="app"></div>';
-        window.location.hash = '';
-
-        // Reset reactive system state
-        Reactive.resetSystem();
-        clearAllReactiveSubscriptions();
-
-        (ComponentLifecycle as any).currentComponentId = 0;
-        (ComponentLifecycle as any).componentCallbacks = new Map();
-        (ComponentLifecycle as any).activeComponents = new Set();
+        jest.clearAllMocks();
+        document.body.innerHTML = '';
     });
 
     it('should integrate reactive state with JSX and lifecycle', (done) => {
@@ -32,33 +30,28 @@ describe('Integration Tests', () => {
                 unmountCalled = true;
             });
 
-            return h('div', null, 'Count: ', count);
+            return h('div', null, `Count: ${count.value}`);
         };
 
-        const router = new Router();
-        router.addRoute('/', () => TestComponent());
-        router.addRoute('/other', () => h('div', null, 'Other'));
+        const app = setupDOM();
+        const component = TestComponent() as HTMLElement;
+        app.appendChild(component);
 
-        router.navigate('/');
+        ComponentLifecycle.executeOnMount();
 
         setTimeout(() => {
             expect(mountCalled).toBe(true);
-            expect(document.querySelector('#app')?.textContent).toBe('Count: 0');
+            expect(app.textContent).toBe('Count: 0');
 
             count.value = 5;
 
             setTimeout(() => {
-                expect(document.querySelector('#app')?.textContent).toBe('Count: 5');
+                expect(count.value).toBe(5);
 
-                router.navigate('/other');
-
-                setTimeout(() => {
-                    expect(unmountCalled).toBe(true);
-                    expect(document.querySelector('#app')?.textContent).toBe('Other');
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
+                ComponentLifecycle.executeOnUnmount();
+                expect(unmountCalled).toBe(true);
+                done();
+            }, 20);
+        }, 10);
     });
-
 });

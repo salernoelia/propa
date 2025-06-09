@@ -1,4 +1,4 @@
-import { h } from "@salernoelia/propa";
+import { h, when } from "@salernoelia/propa";
 import { ComponentLifecycle } from '@salernoelia/propa';
 import { reactive } from '@salernoelia/propa';
 import { Navigation } from "../components/Navigation";
@@ -63,7 +63,7 @@ export function AboutPage() {
                     {showDetails.value ? 'Hide' : 'Show'} Technical Details
                 </Button>
 
-                {showDetails.value && (
+                {when(showDetails, (
                     <div className="mt-6 bg-gray-800 rounded-lg border p-6">
                         <h3 className="text-lg font-semibold text-white mb-4">Technical Specifications</h3>
                         <ul className="space-y-2 text-white">
@@ -75,7 +75,7 @@ export function AboutPage() {
                             <li><strong>P5.js:</strong> Integrated wrapper for creative coding</li>
                         </ul>
                     </div>
-                )}
+                ))}
             </div>
         </div>
     );
