@@ -60,8 +60,11 @@ export class Reactive<T> {
                     return value;
                 },
                 set(target, prop, value, receiver) {
+                    const oldValue = target[prop];
                     const result = Reflect.set(target, prop, value, receiver);
-                    self.scheduleUpdate();
+                    if (oldValue !== value) {
+                        self.scheduleUpdate();
+                    }
                     return result;
                 },
                 defineProperty(target, property, attributes) {
