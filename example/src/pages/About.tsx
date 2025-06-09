@@ -27,6 +27,14 @@ export function AboutPage() {
 
     });
 
+    const generateRandomStats = () => {
+        return {
+            components: Math.floor(Math.random() * 20) + 5,
+            linesOfCode: Math.floor(Math.random() * 2000) + 500,
+            buildTime: Math.floor(Math.random() * 100) + 20
+        };
+    };
+
     const toggleDetails = () => {
         showDetails.value = !showDetails.value;
     };
@@ -48,6 +56,8 @@ export function AboutPage() {
                     </p>
                 </div>
 
+                <Button onClick={() => stats.value = generateRandomStats()}>Reactive Objectss</Button>
+
                 <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="text-center">
                         <div className="text-3xl font-bold text-white">{components}</div>
@@ -63,10 +73,10 @@ export function AboutPage() {
                     </div>
                 </div>
 
-                <h2>Value: {value.value}</h2>
+
 
                 <Button onClick={toggleDetails}>
-                    {showDetails.value ? 'Hide' : 'Show'} Technical Details
+                    {showDetails.value ? 'Hide' : 'Show'} Conditional
                 </Button>
 
                 {when(showDetails, (
