@@ -10,6 +10,12 @@ Install Propa using npm (or your preferred package manager):
 npm install @salernoelia/propa
 ```
 
+When working with P5 also install
+
+```bash
+npm install p5 @types/p5
+```
+
 ## Quick Setup
 
 To use `Propa` with JSX, you need to configure your `vite.config.ts` (if using Vite) and `tsconfig.json` files.
