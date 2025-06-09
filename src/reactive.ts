@@ -3,7 +3,6 @@ export class Reactive<T> {
     private subscribers: Set<() => void> = new Set();
     private static pendingUpdates = new Set<Reactive<any>>();
     private static isUpdating = false;
-    private static pendingTimeoutId: any = null;
     public static currentComputation: ComputedReactive<any> | null = null;
 
     constructor(initialValue: T) {
@@ -13,10 +12,7 @@ export class Reactive<T> {
     static resetSystem() {
         Reactive.pendingUpdates.clear();
         Reactive.isUpdating = false;
-        if (Reactive.pendingTimeoutId !== null) {
-            clearTimeout(Reactive.pendingTimeoutId);
-            Reactive.pendingTimeoutId = null;
-        }
+        ComputedReactive.resetSystem();
     }
 
     get value(): T {
@@ -69,24 +65,24 @@ export class Reactive<T> {
         Reactive.pendingUpdates.add(this);
         if (!Reactive.isUpdating) {
             Reactive.isUpdating = true;
-            const isTest = typeof jest !== 'undefined' || process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID !== undefined;
-            if (isTest) {
-                Reactive.pendingTimeoutId = setTimeout(() => this.flushUpdates(), 0);
+            if (typeof window !== 'undefined') {
+                requestAnimationFrame(() => Reactive.flushUpdates());
             } else {
-                requestAnimationFrame(() => this.flushUpdates());
+                setTimeout(() => Reactive.flushUpdates(), 0);
             }
         }
     }
 
-    private flushUpdates() {
+    private static flushUpdates() {
         const pendingReactives = Array.from(Reactive.pendingUpdates);
         Reactive.pendingUpdates.clear();
         Reactive.isUpdating = false;
-        Reactive.pendingTimeoutId = null;
 
         pendingReactives.forEach(reactive => {
             reactive.notify();
         });
+
+        ComputedReactive.flushPendingUpdates();
     }
 
     private notify() {
@@ -100,9 +96,31 @@ export class ComputedReactive<T> {
     private subscribers: Set<() => void> = new Set();
     private dependencies: Set<() => void> = new Set();
     private static pendingComputeds = new Set<ComputedReactive<any>>();
+    private static isFlushingComputeds = false;
 
     constructor(private computation: () => T) {
         this._value = this.compute();
+    }
+
+    static resetSystem() {
+        ComputedReactive.pendingComputeds.clear();
+        ComputedReactive.isFlushingComputeds = false;
+    }
+
+    static flushPendingUpdates() {
+        if (ComputedReactive.isFlushingComputeds || ComputedReactive.pendingComputeds.size === 0) {
+            return;
+        }
+
+        ComputedReactive.isFlushingComputeds = true;
+        const pendingComputeds = Array.from(ComputedReactive.pendingComputeds);
+        ComputedReactive.pendingComputeds.clear();
+
+        pendingComputeds.forEach(computed => {
+            computed.subscribers.forEach(callback => callback());
+        });
+
+        ComputedReactive.isFlushingComputeds = false;
     }
 
     get value(): T {
@@ -136,23 +154,7 @@ export class ComputedReactive<T> {
         if (this._valid) {
             this._valid = false;
             ComputedReactive.pendingComputeds.add(this);
-
-            const isTest = typeof jest !== 'undefined' || process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID !== undefined;
-            if (isTest) {
-                setTimeout(() => this.flushComputedUpdates(), 0);
-            } else {
-                requestAnimationFrame(() => this.flushComputedUpdates());
-            }
         }
-    }
-
-    private flushComputedUpdates() {
-        const pendingComputeds = Array.from(ComputedReactive.pendingComputeds);
-        ComputedReactive.pendingComputeds.clear();
-
-        pendingComputeds.forEach(computed => {
-            computed.subscribers.forEach(callback => callback());
-        });
     }
 
     subscribe(callback: () => void): () => void {

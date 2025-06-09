@@ -19,13 +19,12 @@ export function AboutPage() {
     const buildTime = computed(() => stats.value.buildTime);
 
     ComponentLifecycle.onMount(() => {
-        setTimeout(() => {
-            stats.value = {
-                components: 7,
-                linesOfCode: 850,
-                buildTime: 45
-            };
-        }, 300);
+        stats.value = {
+            components: 7,
+            linesOfCode: 850,
+            buildTime: 45
+        };
+
     });
 
     const toggleDetails = () => {
