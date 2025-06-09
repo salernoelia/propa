@@ -10,7 +10,6 @@ export function AboutPage() {
         linesOfCode: 0,
         buildTime: 0
     });
-    const value = reactive(50);
 
     const showDetails = reactive(false);
 

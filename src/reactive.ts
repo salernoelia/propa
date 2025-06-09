@@ -15,6 +15,7 @@ export class Reactive<T> {
         ComputedReactive.resetSystem();
     }
 
+
     get value(): T {
         if (Reactive.currentComputation) {
             const currentComp = Reactive.currentComputation;
@@ -43,17 +44,77 @@ export class Reactive<T> {
             return obj;
         }
 
+        if ((obj as any).__isReactive) {
+            return obj;
+        }
+
         const self = this;
-        return new Proxy(obj as any, {
+
+        if (obj instanceof Date || obj instanceof Map || obj instanceof Set) {
+            const proxy = new Proxy(obj as any, {
+                get(target, prop, receiver) {
+                    const value = Reflect.get(target, prop, receiver);
+                    if (typeof value === 'function') {
+                        return value.bind(target);
+                    }
+                    return value;
+                },
+                set(target, prop, value, receiver) {
+                    const result = Reflect.set(target, prop, value, receiver);
+                    self.scheduleUpdate();
+                    return result;
+                },
+                defineProperty(target, property, attributes) {
+                    const result = Reflect.defineProperty(target, property, attributes);
+                    self.scheduleUpdate();
+                    return result;
+                },
+                deleteProperty(target, property) {
+                    const result = Reflect.deleteProperty(target, property);
+                    self.scheduleUpdate();
+                    return result;
+                }
+            });
+            Object.defineProperty(proxy, '__isReactive', { value: true, enumerable: false, writable: false, configurable: false });
+            return proxy as T;
+        }
+
+        const proxy = new Proxy(obj as any, {
             get(target, prop, receiver) {
-                return Reflect.get(target, prop, receiver);
+                if (prop === '__isReactive') return true;
+                const value = Reflect.get(target, prop, receiver);
+                if (typeof value === 'object' && value !== null) {
+                    return self.makeReactive(value);
+                }
+                if (typeof value === 'function') {
+                    if (target instanceof Map && Map.prototype.hasOwnProperty(prop)) return value.bind(target);
+                    if (target instanceof Set && Set.prototype.hasOwnProperty(prop)) return value.bind(target);
+                    if (target instanceof Date && Date.prototype.hasOwnProperty(prop)) return value.bind(target);
+                    if (Array.isArray(target) && Array.prototype.hasOwnProperty(prop)) return value.bind(target);
+                }
+                return value;
             },
             set(target, prop, value, receiver) {
+                const oldValue = target[prop];
                 const result = Reflect.set(target, prop, value, receiver);
+                if (oldValue !== value) {
+                    self.scheduleUpdate();
+                }
+                return result;
+            },
+            defineProperty(target, property, attributes) {
+                const result = Reflect.defineProperty(target, property, attributes);
+                self.scheduleUpdate();
+                return result;
+            },
+            deleteProperty(target, property) {
+                const result = Reflect.deleteProperty(target, property);
                 self.scheduleUpdate();
                 return result;
             }
-        }) as T;
+        });
+        Object.defineProperty(proxy, '__isReactive', { value: true, enumerable: false, writable: false, configurable: false });
+        return proxy as T;
     }
 
     subscribe(callback: () => void): () => void {
@@ -90,6 +151,7 @@ export class Reactive<T> {
     }
 }
 
+
 export class ComputedReactive<T> {
     private _value: T;
     private _valid = false;
@@ -97,6 +159,7 @@ export class ComputedReactive<T> {
     private dependencies: Set<() => void> = new Set();
     private static pendingComputeds = new Set<ComputedReactive<any>>();
     private static isFlushingComputeds = false;
+    private static computationStack: ComputedReactive<any>[] = [];
 
     constructor(private computation: () => T) {
         this._value = this.compute();
@@ -105,25 +168,38 @@ export class ComputedReactive<T> {
     static resetSystem() {
         ComputedReactive.pendingComputeds.clear();
         ComputedReactive.isFlushingComputeds = false;
+        ComputedReactive.computationStack = [];
     }
 
     static flushPendingUpdates() {
-        if (ComputedReactive.isFlushingComputeds || ComputedReactive.pendingComputeds.size === 0) {
+        if (ComputedReactive.isFlushingComputeds) {
             return;
         }
 
         ComputedReactive.isFlushingComputeds = true;
-        const pendingComputeds = Array.from(ComputedReactive.pendingComputeds);
-        ComputedReactive.pendingComputeds.clear();
+        try {
+            while (ComputedReactive.pendingComputeds.size > 0) {
+                const computedsToProcess = Array.from(ComputedReactive.pendingComputeds);
+                ComputedReactive.pendingComputeds.clear();
 
-        pendingComputeds.forEach(computed => {
-            computed.subscribers.forEach(callback => callback());
-        });
-
-        ComputedReactive.isFlushingComputeds = false;
+                computedsToProcess.forEach(computed => {
+                    computed.subscribers.forEach(callback => callback());
+                });
+            }
+        } finally {
+            ComputedReactive.isFlushingComputeds = false;
+        }
     }
 
     get value(): T {
+        if (Reactive.currentComputation) {
+            const dependentComputation = Reactive.currentComputation;
+            const unsubscribe = this.subscribe(() => {
+                dependentComputation.invalidate();
+            });
+            dependentComputation.addDependency(unsubscribe);
+        }
+
         if (!this._valid) {
             this._value = this.compute();
         }
@@ -145,6 +221,9 @@ export class ComputedReactive<T> {
             const result = this.computation();
             this._valid = true;
             return result;
+        } catch (e) {
+            this._valid = false;
+            throw e;
         } finally {
             Reactive.currentComputation = oldComputation;
         }
