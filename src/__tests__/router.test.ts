@@ -68,20 +68,18 @@ describe('Router', () => {
         router.addRoute('/', homeHandler);
         router.addRoute('/404', notFoundHandler);
 
-        // Navigate to non-existent route should trigger 404 handler
         router.navigate('/non-existent-route');
 
         expect(notFoundHandler).toHaveBeenCalled();
     });
 
     it('should handle history mode navigation', () => {
-        router = new Router(false, false); // history mode, no hash
+        router = new Router(false, false);
         const homeHandler = jest.fn(() => h('div', null, 'Home'));
 
         router.addRoute('/', homeHandler);
         router.navigate('/');
 
-        // In history mode, should use pathname instead of hash
         expect(homeHandler).toHaveBeenCalled();
     });
 
@@ -89,7 +87,6 @@ describe('Router', () => {
         const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
         router = new Router();
 
-        // Simulate router destruction by calling removeEventListener
         window.removeEventListener('hashchange', expect.any(Function));
         window.removeEventListener('load', expect.any(Function));
 
