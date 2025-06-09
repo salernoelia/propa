@@ -134,6 +134,7 @@ describe('WasmModule', () => {
         const invalidWasmModule = {
             default: jest.fn(),
             memory: { buffer: new ArrayBuffer(1024) }
+
         };
 
     });

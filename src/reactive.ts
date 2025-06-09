@@ -129,7 +129,7 @@ export class Reactive<T> {
         Reactive.pendingUpdates.add(this);
         if (!Reactive.isUpdating) {
             Reactive.isUpdating = true;
-            if (typeof window !== 'undefined') {
+            if (typeof window !== 'undefined' && typeof requestAnimationFrame !== 'undefined') {
                 requestAnimationFrame(() => Reactive.flushUpdates());
             } else {
                 setTimeout(() => Reactive.flushUpdates(), 0);

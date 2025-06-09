@@ -66,9 +66,15 @@ export class Router {
 
             this.currentRoute = path;
 
-            requestAnimationFrame(() => {
-                ComponentLifecycle.executeOnMount();
-            });
+            if (typeof requestAnimationFrame !== 'undefined') {
+                requestAnimationFrame(() => {
+                    ComponentLifecycle.executeOnMount();
+                });
+            } else {
+                setTimeout(() => {
+                    ComponentLifecycle.executeOnMount();
+                }, 0);
+            }
         }
     }
 
@@ -85,6 +91,7 @@ export class Router {
         if (path !== this.currentRoute) {
             if (this.useHash) {
                 window.location.hash = path;
+                this.handleRoute();
             } else {
                 window.history.pushState({}, '', path);
                 this.handleRoute();
