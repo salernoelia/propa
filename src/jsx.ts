@@ -17,7 +17,6 @@ export function h(
     }
 
     const element = document.createElement(tag);
-    const cleanupCallbacks: (() => void)[] = [];
 
     if (props) {
         Object.entries(props).forEach(([key, value]) => {
@@ -48,18 +47,18 @@ export function h(
                 const cleanup = child.subscribe(() => {
                     textNode.textContent = String(child.value);
                 });
-                cleanupCallbacks.push(cleanup);
+
+                globalCleanupCallbacks.push(cleanup);
             } else if (child && typeof child === 'object' && child.type === 'conditional') {
                 const placeholder = document.createComment('conditional');
                 element.appendChild(placeholder);
 
                 const cleanup = child.condition.subscribe(() => {
-                    const nextSibling = placeholder.nextSibling;
-                    while (nextSibling && nextSibling !== placeholder.parentNode?.children[Array.from(placeholder.parentNode.children).indexOf(placeholder as any) + 1]) {
-                        if (nextSibling.nodeType !== 8) {
-                            nextSibling.remove();
-                            break;
-                        }
+                    let next = placeholder.nextSibling;
+                    while (next && next.nodeType !== 8) {
+                        const toRemove = next;
+                        next = next.nextSibling;
+                        toRemove.remove();
                     }
 
                     if (child.condition.value) {
@@ -67,7 +66,8 @@ export function h(
                         placeholder.parentNode?.insertBefore(newElement, placeholder.nextSibling);
                     }
                 });
-                cleanupCallbacks.push(cleanup);
+
+                globalCleanupCallbacks.push(cleanup);
 
                 if (child.condition.value) {
                     placeholder.parentNode?.insertBefore(child.element, placeholder.nextSibling);
@@ -75,12 +75,6 @@ export function h(
             }
         }
     });
-
-    if (cleanupCallbacks.length > 0) {
-        ComponentLifecycle.onUnmount(() => {
-            cleanupCallbacks.forEach(cleanup => cleanup());
-        });
-    }
 
     return element;
 }

@@ -4,7 +4,6 @@ import { reactive, Reactive } from '../reactive';
 describe('Reactive', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // Reset reactive system state
         Reactive.resetSystem();
     });
 
@@ -36,6 +35,31 @@ describe('Reactive', () => {
 
         setTimeout(() => {
             expect(callback).not.toHaveBeenCalled();
+            done();
+        }, 10);
+    });
+
+    it('should handle object updates correctly', (done) => {
+        const stats = reactive({
+            components: 0,
+            linesOfCode: 0,
+            buildTime: 0
+        });
+        const callback = jest.fn();
+
+        stats.subscribe(callback);
+
+        stats.value = {
+            components: 7,
+            linesOfCode: 850,
+            buildTime: 45
+        };
+
+        setTimeout(() => {
+            expect(callback).toHaveBeenCalledTimes(1);
+            expect(stats.value.components).toBe(7);
+            expect(stats.value.linesOfCode).toBe(850);
+            expect(stats.value.buildTime).toBe(45);
             done();
         }, 10);
     });

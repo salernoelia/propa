@@ -82,6 +82,36 @@ describe('JSX (h function)', () => {
         }, 10);
     });
 
+    it('should handle reactive values in JSX expressions', (done) => {
+        const count = reactive(0);
+
+        const element = h('div', null, count);
+
+        expect(element.textContent).toBe('0');
+
+        count.value = 42;
+
+        setTimeout(() => {
+            expect(element.textContent).toBe('42');
+            done();
+        }, 10);
+    });
+
+    it('should handle reactive objects directly in JSX', (done) => {
+        const count = reactive(0);
+
+        const element = h('div', null, count);
+
+        expect(element.textContent).toBe('0');
+
+        count.value = 42;
+
+        setTimeout(() => {
+            expect(element.textContent).toBe('42');
+            done();
+        }, 10);
+    });
+
     it('should handle nested elements', () => {
         const element = h('div', null,
             h('h1', null, 'Title'),

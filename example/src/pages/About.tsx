@@ -5,21 +5,16 @@ import { Navigation } from "../components/Navigation";
 import { Button } from "../components/Button";
 
 export function AboutPage() {
-    const stats = reactive({
-        components: 0,
-        linesOfCode: 0,
-        buildTime: 0
-    });
-
+    const components = reactive(0);
+    const linesOfCode = reactive(0);
+    const buildTime = reactive(0);
     const showDetails = reactive(false);
 
     ComponentLifecycle.onMount(() => {
         setTimeout(() => {
-            stats.value = {
-                components: 7,
-                linesOfCode: 850,
-                buildTime: 45
-            };
+            components.value = 7;
+            linesOfCode.value = 850;
+            buildTime.value = 45;
         }, 300);
     });
 
@@ -46,15 +41,15 @@ export function AboutPage() {
 
                 <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="text-center">
-                        <div className="text-3xl font-bold text-white">{stats.value.components}</div>
+                        <div className="text-3xl font-bold text-white">{components}</div>
                         <div className="text-sm text-white">Components</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-3xl font-bold text-white">{stats.value.linesOfCode}</div>
+                        <div className="text-3xl font-bold text-white">{linesOfCode}</div>
                         <div className="text-sm text-white">Lines of Code</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-3xl font-bold text-white">{stats.value.buildTime}ms</div>
+                        <div className="text-3xl font-bold text-white">{buildTime}ms</div>
                         <div className="text-sm text-white">Build Time</div>
                     </div>
                 </div>

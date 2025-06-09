@@ -23,7 +23,11 @@ export class Reactive<T> {
     }
 
     set value(newValue: T) {
-        if (this._value !== newValue) {
+        const shouldUpdate = typeof newValue === 'object' && newValue !== null
+            ? true
+            : this._value !== newValue;
+
+        if (shouldUpdate) {
             this._value = newValue;
             this.scheduleUpdate();
         }
@@ -38,7 +42,6 @@ export class Reactive<T> {
         Reactive.pendingUpdates.add(this);
         if (!Reactive.isUpdating) {
             Reactive.isUpdating = true;
-            // Always use setTimeout in Jest environment for consistent timing
             const isTest = typeof jest !== 'undefined' || process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID !== undefined;
             if (isTest) {
                 Reactive.pendingTimeoutId = setTimeout(() => this.flushUpdates(), 0);
