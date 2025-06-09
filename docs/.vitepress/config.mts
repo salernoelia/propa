@@ -58,12 +58,6 @@ export default defineConfig({
           items: [
             { text: 'Philosophy', link: '/philosophy' }
           ]
-        },
-        {
-          text: 'VitePress Examples',
-          items: [
-            { text: 'Runtime API Examples', link: '/api-examples' }
-          ]
         }
       ]
     },
