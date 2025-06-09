@@ -1,20 +1,30 @@
 import { h, when } from "@salernoelia/propa";
 import { ComponentLifecycle } from '@salernoelia/propa';
-import { reactive } from '@salernoelia/propa';
+import { reactive, computed } from '@salernoelia/propa';
 import { Navigation } from "../components/Navigation";
 import { Button } from "../components/Button";
 
 export function AboutPage() {
-    const components = reactive(0);
-    const linesOfCode = reactive(0);
-    const buildTime = reactive(0);
+    const stats = reactive({
+        components: 0,
+        linesOfCode: 0,
+        buildTime: 0
+    });
+    const value = reactive(50);
+
     const showDetails = reactive(false);
+
+    const components = computed(() => stats.value.components);
+    const linesOfCode = computed(() => stats.value.linesOfCode);
+    const buildTime = computed(() => stats.value.buildTime);
 
     ComponentLifecycle.onMount(() => {
         setTimeout(() => {
-            components.value = 7;
-            linesOfCode.value = 850;
-            buildTime.value = 45;
+            stats.value = {
+                components: 7,
+                linesOfCode: 850,
+                buildTime: 45
+            };
         }, 300);
     });
 
@@ -53,6 +63,8 @@ export function AboutPage() {
                         <div className="text-sm text-white">Build Time</div>
                     </div>
                 </div>
+
+                <h2>Value: {value.value}</h2>
 
                 <Button onClick={toggleDetails}>
                     {showDetails.value ? 'Hide' : 'Show'} Technical Details

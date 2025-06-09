@@ -1,4 +1,3 @@
-import { ComponentLifecycle } from './lifecycle';
 
 const globalCleanupCallbacks: (() => void)[] = [];
 
@@ -109,6 +108,9 @@ export function when(condition: any, element: any) {
 }
 
 declare global {
+    interface Window {
+        __reactiveContext?: any;
+    }
     namespace JSX {
         interface IntrinsicElements {
             div: any;

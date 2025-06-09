@@ -1,5 +1,5 @@
 // Core utilities
-export { Reactive, reactive } from './reactive';
+export { Reactive, reactive, computed } from './reactive';
 export { ComponentLifecycle } from './lifecycle';
 export { Router } from './router';
 export { h, when } from './jsx';
