@@ -52,3 +52,4 @@ export default defineConfig({
     // ... other compiler options
   }
 }
+```

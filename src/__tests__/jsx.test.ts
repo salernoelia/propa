@@ -1,6 +1,7 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
-import { h, clearAllReactiveSubscriptions } from '../jsx';
+import { h, clearAllReactiveSubscriptions, when } from '../jsx';
 import { reactive, Reactive } from '../reactive';
+import { ComponentLifecycle } from '../lifecycle';
 
 if (!global.document) {
     Object.defineProperty(global, 'document', {
@@ -190,3 +191,162 @@ describe('JSX with Conditional Rendering', () => {
     });
 });
 
+
+describe('Memory Leak Prevention', () => {
+    it('should clean up reactive subscriptions when component unmounts', () => {
+        const count = reactive(0);
+
+        let subscriptionCallCount = 0;
+
+        const originalSubscribe = count.subscribe;
+        count.subscribe = jest.fn((callback: () => void) => {
+            const cleanup = originalSubscribe.call(count, () => {
+                subscriptionCallCount++;
+                callback();
+            });
+            return cleanup;
+        });
+
+        const element = h('div', null, count);
+
+        expect(element.textContent).toBe('0');
+        expect(subscriptionCallCount).toBe(0);
+
+        count.value = 1;
+
+        return new Promise<void>((resolve) => {
+            setTimeout(() => {
+                expect(element.textContent).toBe('1');
+                expect(subscriptionCallCount).toBe(1);
+
+                ComponentLifecycle.executeOnUnmount();
+
+                count.value = 2;
+
+                setTimeout(() => {
+                    expect(element.textContent).toBe('1');
+                    expect(subscriptionCallCount).toBe(1);
+                    resolve();
+                }, 10);
+            }, 10);
+        });
+    });
+
+    it('should clean up multiple reactive subscriptions', () => {
+        const count1 = reactive(0);
+        const count2 = reactive(10);
+
+        let subscription1CallCount = 0;
+        let subscription2CallCount = 0;
+
+        const originalSubscribe1 = count1.subscribe;
+        count1.subscribe = jest.fn((callback: () => void) => {
+            const cleanup = originalSubscribe1.call(count1, () => {
+                subscription1CallCount++;
+                callback();
+            });
+            return cleanup;
+        });
+
+        const originalSubscribe2 = count2.subscribe;
+        count2.subscribe = jest.fn((callback: () => void) => {
+            const cleanup = originalSubscribe2.call(count2, () => {
+                subscription2CallCount++;
+                callback();
+            });
+            return cleanup;
+        });
+
+        const element = h('div', null,
+            'Count1: ', count1,
+            ' Count2: ', count2
+        );
+
+        expect(element.textContent).toBe('Count1: 0 Count2: 10');
+
+        count1.value = 1;
+        count2.value = 11;
+
+        return new Promise<void>((resolve) => {
+            setTimeout(() => {
+                expect(element.textContent).toBe('Count1: 1 Count2: 11');
+                expect(subscription1CallCount).toBe(1);
+                expect(subscription2CallCount).toBe(1);
+
+                ComponentLifecycle.executeOnUnmount();
+
+                count1.value = 2;
+                count2.value = 12;
+
+                setTimeout(() => {
+                    expect(element.textContent).toBe('Count1: 1 Count2: 11');
+                    expect(subscription1CallCount).toBe(1);
+                    expect(subscription2CallCount).toBe(1);
+                    resolve();
+                }, 10);
+            }, 10);
+        });
+    });
+
+    it('should clean up conditional reactive subscriptions', () => {
+        const condition = reactive(true);
+        const count = reactive(0);
+
+        let conditionCallCount = 0;
+
+        const originalSubscribe = condition.subscribe;
+        condition.subscribe = jest.fn((callback: () => void) => {
+            const cleanup = originalSubscribe.call(condition, () => {
+                conditionCallCount++;
+                callback();
+            });
+            return cleanup;
+        });
+
+        const element = h('div', null,
+            when(condition, h('span', null, count))
+        );
+
+        expect(element.children.length).toBeGreaterThan(0);
+
+        condition.value = false;
+
+        return new Promise<void>((resolve) => {
+            setTimeout(() => {
+                expect(conditionCallCount).toBe(1);
+
+                ComponentLifecycle.executeOnUnmount();
+
+                condition.value = true;
+
+                setTimeout(() => {
+                    expect(conditionCallCount).toBe(1);
+                    resolve();
+                }, 10);
+            }, 10);
+        });
+    });
+
+    it('should not interfere with new components after cleanup', () => {
+        const count1 = reactive(0);
+
+        const element1 = h('div', null, count1);
+        expect(element1.textContent).toBe('0');
+
+        ComponentLifecycle.executeOnUnmount();
+
+        const count2 = reactive(5);
+        const element2 = h('div', null, count2);
+        expect(element2.textContent).toBe('5');
+
+        count2.value = 10;
+
+        return new Promise<void>((resolve) => {
+            setTimeout(() => {
+                expect(element2.textContent).toBe('10');
+                expect(element1.textContent).toBe('0');
+                resolve();
+            }, 10);
+        });
+    });
+});

@@ -1,9 +1,16 @@
 
+import { ComponentLifecycle } from './lifecycle';
+
 const globalCleanupCallbacks: (() => void)[] = [];
 
 export function clearAllReactiveSubscriptions() {
     globalCleanupCallbacks.forEach(cleanup => cleanup());
     globalCleanupCallbacks.length = 0;
+}
+
+function addReactiveCleanup(cleanup: () => void) {
+    ComponentLifecycle.onUnmount(cleanup);
+    globalCleanupCallbacks.push(cleanup);
 }
 
 export function h(
@@ -47,7 +54,7 @@ export function h(
                     textNode.textContent = String(child.value);
                 });
 
-                globalCleanupCallbacks.push(cleanup);
+                addReactiveCleanup(cleanup);
             } else if (child && typeof child === 'object' && child.type === 'conditional') {
                 const placeholder = document.createComment('conditional');
                 element.appendChild(placeholder);
@@ -66,7 +73,7 @@ export function h(
                     }
                 });
 
-                globalCleanupCallbacks.push(cleanup);
+                addReactiveCleanup(cleanup);
 
                 if (child.condition.value) {
                     placeholder.parentNode?.insertBefore(child.element, placeholder.nextSibling);
