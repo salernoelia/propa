@@ -1,6 +1,6 @@
 # Propa Framework
 
-![Propa Logo](./docs/logo.png)
+![Propa Logo](./docs/public/logo.png)
 
 **✨ For detailed documentation, including API Reference, please visit the [Propa Framework Documentation Site](./docs/). ✨**
 
