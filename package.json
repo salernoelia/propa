@@ -1,6 +1,6 @@
 {
   "name": "@salernoelia/propa",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A lightweight framework with JSX support for vanilla TypeScript with Vite",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

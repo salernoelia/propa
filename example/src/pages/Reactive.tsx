@@ -35,31 +35,31 @@ export function ReactivePage() {
     };
 
     return (
-        <div style={{ color: 'white' }}>
+        <div className="text-white">
             <Navigation />
 
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-                <h1>Reactive State Demo</h1>
-                <p>Explore Propa's reactive state management with automatic DOM updates.</p>
+            <div className="max-w-xl mx-auto">
+                <h1 className="text-3xl font-bold mb-4">Reactive State Demo</h1>
+                <p className="mb-6">Explore Propa's reactive state management with automatic DOM updates.</p>
 
-                <div style={{ padding: '2rem', borderRadius: '8px', margin: '2rem 0' }}>
-                    <h2 style={{ textAlign: 'center' }}>{message}</h2>
+                <div className="p-8 rounded-lg my-8 border border-gray-700">
+                    <h2 className="text-2xl text-center">{message}</h2>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div className="flex flex-col gap-6">
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                        <label htmlFor="text-input" className="block mb-2 font-bold">
                             Text Input (updates message above):
                         </label>
                         <input
                             id="text-input"
                             type="text"
                             placeholder="Start typing..."
-                            style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }}
+                            className="w-full p-3 border border-gray-600 rounded bg-gray-800 text-white placeholder-gray-500"
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div className="flex gap-4 items-center">
                         <Button onClick={handleButtonClick}>
                             Click Me ({clickCount})
                         </Button>
@@ -70,7 +70,7 @@ export function ReactivePage() {
                     </div>
 
                     <div>
-                        <h3>Counter Component:</h3>
+                        <h3 className="text-xl font-semibold mb-2">Counter Component:</h3>
                         <Counter
                             initialValue={10}
                             label="Interactive Counter:"
@@ -78,9 +78,9 @@ export function ReactivePage() {
                         />
                     </div>
 
-                    <div style={{ marginTop: '2rem', padding: '1rem', borderRadius: '4px' }}>
-                        <h4>Reactive Values:</h4>
-                        <ul style={{ margin: '0.5rem 0' }}>
+                    <div className="mt-8 p-4 rounded border border-gray-700">
+                        <h4 className="text-lg font-semibold mb-2">Reactive Values:</h4>
+                        <ul className="my-2 list-disc list-inside">
                             <li>Input Value: "{inputValue}"</li>
                             <li>Click Count: {clickCount}</li>
                             <li>Message: "{message}"</li>

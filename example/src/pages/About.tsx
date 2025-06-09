@@ -55,7 +55,7 @@ export function AboutPage() {
                     </p>
                 </div>
 
-                <Button onClick={() => stats.value = generateRandomStats()}>Reactive Objectss</Button>
+                <Button onClick={() => stats.value = generateRandomStats()}>Reactive Objects</Button>
 
                 <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="text-center">
