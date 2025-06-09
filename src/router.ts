@@ -7,6 +7,7 @@ export class Router {
     private routeCache: Map<string, HTMLElement> = new Map();
     private enableCaching: boolean;
     private useHash: boolean;
+    private currentElement: HTMLElement | null = null;
 
     constructor(enableCaching = false, useHash = true) {
         this.enableCaching = enableCaching;
@@ -55,8 +56,13 @@ export class Router {
             }
 
             const app = document.querySelector<HTMLDivElement>('#app')!;
-            app.innerHTML = '';
+
+            if (this.currentElement) {
+                app.removeChild(this.currentElement);
+            }
+
             app.appendChild(element);
+            this.currentElement = element;
 
             this.currentRoute = path;
 
