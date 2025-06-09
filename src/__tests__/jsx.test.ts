@@ -349,4 +349,30 @@ describe('Memory Leak Prevention', () => {
             }, 10);
         });
     });
+
+    it('should handle malformed reactive objects', () => {
+        const malformedReactive = { value: 42 };
+
+        expect(() => {
+            h('div', null, malformedReactive);
+        }).not.toThrow();
+    });
+
+    it('should handle circular references in children', () => {
+        const circularRef: any = {};
+        circularRef.self = circularRef;
+
+        expect(() => {
+            h('div', null, circularRef);
+        }).not.toThrow();
+    });
+
+    it('should handle very deeply nested elements', () => {
+        let element = h('div', null, 'deep');
+        for (let i = 0; i < 100; i++) {
+            element = h('div', null, element);
+        }
+
+        expect(element).toBeDefined();
+    });
 });

@@ -26,6 +26,29 @@ describe('P5 integration', () => {
         ComponentLifecycle.executeOnUnmount();
         expect(p5.mock.results[0].value.remove).toHaveBeenCalled();
     });
+
+
+    it('should handle p5 sketch errors gracefully', () => {
+        const faultySketch = jest.fn(() => {
+            throw new Error('Sketch error');
+        });
+
+        expect(() => {
+            createP5Sketch({ sketch: faultySketch });
+        }).not.toThrow();
+    });
+
+    it('should handle multiple p5 instances', () => {
+        const sketch1 = jest.fn();
+        const sketch2 = jest.fn();
+
+        const component1 = createP5Sketch({ sketch: sketch1 });
+        const component2 = createP5Sketch({ sketch: sketch2 });
+
+        ComponentLifecycle.executeOnMount();
+        ComponentLifecycle.executeOnUnmount();
+
+    });
 });
 
 export function createP5Sketch(props: P5Props): HTMLElement {

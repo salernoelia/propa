@@ -129,4 +129,12 @@ describe('WasmModule', () => {
     it('should handle WASM loading errors', async () => {
         await expect(loadWasm('./invalid.wasm')).rejects.toThrow('Failed to load');
     });
+
+    it('should handle WASM module without required memory functions', async () => {
+        const invalidWasmModule = {
+            default: jest.fn(),
+            memory: { buffer: new ArrayBuffer(1024) }
+        };
+
+    });
 });

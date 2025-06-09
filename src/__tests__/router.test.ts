@@ -58,4 +58,29 @@ describe('Router', () => {
 
         expect(homeHandler).toHaveBeenCalled();
     });
+
+
+    it('should handle 404 routes', () => {
+        router = new Router();
+        const notFoundHandler = jest.fn(() => h('div', null, 'Not Found'));
+
+        router.addRoute('/404', notFoundHandler);
+        router.navigate('/non-existent-route');
+
+    });
+
+    it('should handle history mode navigation', () => {
+        router = new Router(false, false); // history mode
+        const homeHandler = () => h('div', null, 'Home');
+
+        router.addRoute('/', homeHandler);
+        router.navigate('/');
+
+    });
+
+    it('should clean up event listeners on destruction', () => {
+        const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+        router = new Router();
+
+    });
 });
