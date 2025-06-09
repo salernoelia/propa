@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "Framework",
+  title: "Propa",
   description: "Documentation for the Propa TypeScript Framework.",
   base: '/propa/',
   themeConfig: {
