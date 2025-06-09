@@ -69,6 +69,7 @@ function AppContainer() {
 // However, if you need to ensure it runs after specific setup:
 // window.addEventListener('load', () => router.handleRoute());
 ```
+
 The `Router` constructor automatically adds event listeners for `hashchange` and `load`, so it will handle the initial route and subsequent navigation. The router renders content into an element with `id="app"`. Make sure this element exists in your `index.html`.
 
 ```html
@@ -102,12 +103,14 @@ The `Router` can be configured to cache rendered route components to speed up na
 // Enable caching
 const router = new Router(/* enableCaching: */ true, /* useHash: */ true);
 ```
+
 When caching is enabled, Propa keeps the DOM elements of visited routes in memory. Navigating back to a cached route will use the stored elements instead of re-creating them. Lifecycle hooks (`onMount`, `onUnmount`) are still managed correctly.
 
 ## Lifecycle Management
 
 The router integrates with Propa's `ComponentLifecycle`:
-*   When navigating away from a route, `onUnmount` callbacks for the components of the old route are executed.
-*   When navigating to a new route, the new route's component function is called to generate the DOM, and then `onMount` callbacks for the new components are executed.
+
+* When navigating away from a route, `onUnmount` callbacks for the components of the old route are executed.
+* When navigating to a new route, the new route's component function is called to generate the DOM, and then `onMount` callbacks for the new components are executed.
 
 This ensures proper setup and cleanup of resources as users navigate through your application.

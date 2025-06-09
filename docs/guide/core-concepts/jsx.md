@@ -7,6 +7,7 @@ Propa supports JSX (JavaScript XML) for a declarative and familiar way to descri
 To use JSX with Propa, you need to configure your build tool (e.g., Vite) and TypeScript.
 
 **Vite Configuration (`vite.config.ts`):**
+
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
@@ -21,6 +22,7 @@ export default defineConfig({
 ```
 
 **TypeScript Configuration (`tsconfig.json`):**
+
 ```json
 // tsconfig.json
 {
@@ -33,6 +35,7 @@ export default defineConfig({
   }
 }
 ```
+
 Propa provides `h` as the JSX factory function and `Fragment` for grouping multiple elements without a wrapper.
 
 ## Basic Usage
@@ -100,6 +103,7 @@ function ConditionalMessage() {
   );
 }
 ```
+
 The `when` helper takes a reactive boolean (or a `ComputedReactive<boolean>`) as its first argument and the JSX element to render as its second. The element will be added or removed from the DOM based on the condition's value.
 
 ## Fragments
@@ -119,6 +123,7 @@ function UserProfile() {
   );
 }
 ```
+
 If you've configured `jsxFragmentFactory: "Fragment"` in `tsconfig.json` and `vite.config.ts`, you might need to ensure `Fragment` is available, often by importing it from Propa if it's exported, or by defining a simple `Fragment` function if Propa expects it. Propa's `h` function typically handles fragments passed as children arrays. The example `src/jsx.ts` doesn't explicitly export `Fragment` but `h` handles arrays of children, which is what fragments compile to. For explicit fragment syntax `<></>`, ensure your setup correctly resolves it.
 
 Propa's JSX approach aims for simplicity and performance by translating familiar syntax directly to efficient DOM manipulations.

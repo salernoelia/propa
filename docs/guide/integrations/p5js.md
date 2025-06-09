@@ -8,6 +8,7 @@ The `createP5Sketch` utility function is used to embed a p5.js sketch within you
 
 **Prerequisites:**
 Ensure you have `p5` installed as a dependency in your project:
+
 ```bash
 npm install p5
 # If using TypeScript, also install its types
@@ -73,13 +74,13 @@ const MyP5Sketch = () => {
 
 ### How it Works
 
-1.  **Sketch Function**: You define a standard p5.js sketch function that takes a `p5` instance (`p`) as an argument. Inside this function, you implement `p.setup()`, `p.draw()`, and any other p5.js event handlers.
-2.  **`createP5Sketch(props)`**:
-    *   `sketch`: Your p5.js sketch function.
-    *   `containerClass` (optional): A string for CSS class(es) to be applied to the `div` container that will host the p5 canvas.
-    *   `containerStyle` (optional): A string for inline CSS styles to be applied to the container `div`.
-3.  **Lifecycle Management**: `createP5Sketch` handles the p5.js instance lifecycle.
-    *   **Mounting**: When the component containing the sketch is mounted to the DOM, a new `p5` instance is created using your sketch function and attached to a generated `div` element.
-    *   **Unmounting**: When the component is unmounted, the `p5Instance.remove()` method is called to properly clean up the canvas and free resources, preventing memory leaks.
+1. **Sketch Function**: You define a standard p5.js sketch function that takes a `p5` instance (`p`) as an argument. Inside this function, you implement `p.setup()`, `p.draw()`, and any other p5.js event handlers.
+2. **`createP5Sketch(props)`**:
+    * `sketch`: Your p5.js sketch function.
+    * `containerClass` (optional): A string for CSS class(es) to be applied to the `div` container that will host the p5 canvas.
+    * `containerStyle` (optional): A string for inline CSS styles to be applied to the container `div`.
+3. **Lifecycle Management**: `createP5Sketch` handles the p5.js instance lifecycle.
+    * **Mounting**: When the component containing the sketch is mounted to the DOM, a new `p5` instance is created using your sketch function and attached to a generated `div` element.
+    * **Unmounting**: When the component is unmounted, the `p5Instance.remove()` method is called to properly clean up the canvas and free resources, preventing memory leaks.
 
 This integration makes it easy to embed dynamic, interactive graphics and animations created with p5.js directly into your Propa application's component structure.

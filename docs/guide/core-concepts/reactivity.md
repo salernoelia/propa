@@ -34,9 +34,10 @@ function Counter() {
 ```
 
 **Key points about `reactive()`:**
-*   Access and modify the underlying value using the `.value` property.
-*   When `.value` is set, Propa batches the update and re-renders relevant parts of the DOM efficiently using `requestAnimationFrame`.
-*   Can be used with primitives (numbers, strings, booleans) and objects. When used with objects, changes to the object's properties will also trigger reactivity if done through the reactive proxy.
+
+* Access and modify the underlying value using the `.value` property.
+* When `.value` is set, Propa batches the update and re-renders relevant parts of the DOM efficiently using `requestAnimationFrame`.
+* Can be used with primitives (numbers, strings, booleans) and objects. When used with objects, changes to the object's properties will also trigger reactivity if done through the reactive proxy.
 
 ## `computed()`
 
@@ -64,9 +65,10 @@ setTimeout(() => {
 ```
 
 **Key points about `computed()`:**
-*   The function passed to `computed` is the "computation" function.
-*   It automatically tracks reactive dependencies accessed within the computation.
-*   The computed value is cached and only re-calculated when a dependency changes.
-*   Like `reactive` values, computed values are accessed via their `.value` property.
+
+* The function passed to `computed` is the "computation" function.
+* It automatically tracks reactive dependencies accessed within the computation.
+* The computed value is cached and only re-calculated when a dependency changes.
+* Like `reactive` values, computed values are accessed via their `.value` property.
 
 Propa's reactivity system is designed to be efficient and intuitive, enabling you to build complex, dynamic user interfaces with minimal boilerplate.
