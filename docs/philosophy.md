@@ -31,3 +31,7 @@ Propa is well-suited for a variety of web applications, particularly those where
 * **Interactive Data Visualizations**: Combine reactive data with P5.js for dynamic charts, graphs, and generative art.
 * **Applications Requiring WASM**: Leverage WebAssembly for complex calculations, image processing, physics simulations, or integrating Rust/C++ libraries directly in the browser.
 * **Rapid Prototyping**: Quickly build interactive UIs with a declarative JSX syntax and minimal boilerplate, ideal for iterating on ideas fast.
+
+## License
+
+This project is under the MIT license and is maintained by [Elia Salerno](https://eliasalerno.ch/).

@@ -10,7 +10,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Philosophy', link: '/philosophy' },
-      { text: 'API Reference', link: '/api/' }
+      { text: 'API Reference', link: '/api/' },
     ],
 
     sidebar: {
@@ -68,7 +68,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present Elias Salerno'
+      copyright: '2025 Elia Salerno'
     }
   }
 })
